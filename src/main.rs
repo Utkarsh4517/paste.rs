@@ -11,7 +11,7 @@ struct AppState {
 }
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body(include_str!("index.html"))
+    HttpResponse::Ok().body(include_str!("frontend/index.html"))
 }
 
 async fn submit(content: web::Form<FormData>, data: web::Data<AppState>) -> impl Responder {
@@ -57,14 +57,14 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(app_state.clone())
             .service(
-                web::resource("/style.css").to(|| {
-                    async { NamedFile::open("src/style.css") }
+                web::resource("/frontend/style.css").to(|| {
+                    async { NamedFile::open("src/frontend/style.css") }
                 })
             )
             .route("/", web::get().to(index))
             .route("/submit", web::post().to(submit))
             .route("/paste/{token}", web::get().to(get_paste))
     })
-        .bind("127.0.0.1:8080")?
+        .bind("0.0.0.0:8080")?
         .run().await
 }
